@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { trpc } from "@/utils/trpc";
+import { trpc } from "../utils/trpc";
 
 export interface User {
   id: number;

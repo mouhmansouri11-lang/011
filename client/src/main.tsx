@@ -2,9 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
-import { trpc } from "./utils/trpc";
+import { createTRPCReact } from "@trpc/react-query";
 import App from "./App";
 import "./index.css";
+import type { AppRouter } from "../../server/routers";
+
+export const trpc = createTRPCReact<AppRouter>();
 
 // Create query client
 const queryClient = new QueryClient();
