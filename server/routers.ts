@@ -313,12 +313,302 @@ export const appRouter = router({
       }),
   }),
 
-  // TODO: add feature routers here, e.g.
-  // todo: router({
-  //   list: protectedProcedure.query(({ ctx }) =>
-  //     db.getUserTodos(ctx.user.id)
-  //   ),
-  // }),
+  // Patient operations
+  patient: router({
+    // Get patient profile
+    getProfile: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user || ctx.user.userType !== "patient") {
+        throw new Error("Not a patient");
+      }
+
+      try {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const { patients } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+
+        const patient = await db
+          .select()
+          .from(patients)
+          .where(eq(patients.userId, ctx.user.id))
+          .limit(1);
+
+        return patient[0] || null;
+      } catch (error) {
+        console.error("[Router] Error fetching patient profile:", error);
+        throw error;
+      }
+    }),
+
+    // Get blood pressure records
+    getBloodPressure: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user || ctx.user.userType !== "patient") {
+        throw new Error("Not a patient");
+      }
+
+      try {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const { bloodPressureRecords, patients } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+
+        // Get patient ID
+        const patient = await db
+          .select()
+          .from(patients)
+          .where(eq(patients.userId, ctx.user.id))
+          .limit(1);
+
+        if (!patient[0]) throw new Error("Patient not found");
+
+        const records = await db
+          .select()
+          .from(bloodPressureRecords)
+          .where(eq(bloodPressureRecords.patientId, patient[0].id));
+
+        return records;
+      } catch (error) {
+        console.error("[Router] Error fetching blood pressure:", error);
+        return [];
+      }
+    }),
+
+    // Get blood sugar records
+    getBloodSugar: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user || ctx.user.userType !== "patient") {
+        throw new Error("Not a patient");
+      }
+
+      try {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const { bloodSugarRecords, patients } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+
+        const patient = await db
+          .select()
+          .from(patients)
+          .where(eq(patients.userId, ctx.user.id))
+          .limit(1);
+
+        if (!patient[0]) throw new Error("Patient not found");
+
+        const records = await db
+          .select()
+          .from(bloodSugarRecords)
+          .where(eq(bloodSugarRecords.patientId, patient[0].id));
+
+        return records;
+      } catch (error) {
+        console.error("[Router] Error fetching blood sugar:", error);
+        return [];
+      }
+    }),
+
+    // Get appointments
+    getAppointments: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user || ctx.user.userType !== "patient") {
+        throw new Error("Not a patient");
+      }
+
+      try {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const { appointments, patients, medicalProfessionals, users } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+
+        const patient = await db
+          .select()
+          .from(patients)
+          .where(eq(patients.userId, ctx.user.id))
+          .limit(1);
+
+        if (!patient[0]) throw new Error("Patient not found");
+
+        const patientAppointments = await db
+          .select()
+          .from(appointments)
+          .where(eq(appointments.patientId, patient[0].id));
+
+        return patientAppointments;
+      } catch (error) {
+        console.error("[Router] Error fetching appointments:", error);
+        return [];
+      }
+    }),
+
+    // Get prescriptions
+    getPrescriptions: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user || ctx.user.userType !== "patient") {
+        throw new Error("Not a patient");
+      }
+
+      try {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const { prescriptions, patients } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+
+        const patient = await db
+          .select()
+          .from(patients)
+          .where(eq(patients.userId, ctx.user.id))
+          .limit(1);
+
+        if (!patient[0]) throw new Error("Patient not found");
+
+        const patientPrescriptions = await db
+          .select()
+          .from(prescriptions)
+          .where(eq(prescriptions.patientId, patient[0].id));
+
+        return patientPrescriptions;
+      } catch (error) {
+        console.error("[Router] Error fetching prescriptions:", error);
+        return [];
+      }
+    }),
+
+    // Get lab results
+    getLabResults: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user || ctx.user.userType !== "patient") {
+        throw new Error("Not a patient");
+      }
+
+      try {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const { labResults, patients } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+
+        const patient = await db
+          .select()
+          .from(patients)
+          .where(eq(patients.userId, ctx.user.id))
+          .limit(1);
+
+        if (!patient[0]) throw new Error("Patient not found");
+
+        const results = await db
+          .select()
+          .from(labResults)
+          .where(eq(labResults.patientId, patient[0].id));
+
+        return results;
+      } catch (error) {
+        console.error("[Router] Error fetching lab results:", error);
+        return [];
+      }
+    }),
+  }),
+
+  // Doctor operations
+  doctor: router({
+    // Get doctor profile
+    getProfile: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user || !["doctor", "clinic", "lab"].includes(ctx.user.userType)) {
+        throw new Error("Not a medical professional");
+      }
+
+      try {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const { medicalProfessionals } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+
+        const professional = await db
+          .select()
+          .from(medicalProfessionals)
+          .where(eq(medicalProfessionals.userId, ctx.user.id))
+          .limit(1);
+
+        return professional[0] || null;
+      } catch (error) {
+        console.error("[Router] Error fetching doctor profile:", error);
+        throw error;
+      }
+    }),
+
+    // Get doctor appointments
+    getAppointments: publicProcedure.query(async ({ ctx }) => {
+      if (!ctx.user || !["doctor", "clinic", "lab"].includes(ctx.user.userType)) {
+        throw new Error("Not a medical professional");
+      }
+
+      try {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+
+        const { appointments, medicalProfessionals } = await import("../drizzle/schema");
+        const { eq } = await import("drizzle-orm");
+
+        const professional = await db
+          .select()
+          .from(medicalProfessionals)
+          .where(eq(medicalProfessionals.userId, ctx.user.id))
+          .limit(1);
+
+        if (!professional[0]) throw new Error("Professional not found");
+
+        const doctorAppointments = await db
+          .select()
+          .from(appointments)
+          .where(eq(appointments.professionalId, professional[0].id));
+
+        return doctorAppointments;
+      } catch (error) {
+        console.error("[Router] Error fetching doctor appointments:", error);
+        return [];
+      }
+    }),
+  }),
+
+  // Search operations
+  search: router({
+    // Search doctors by specialization, location, name
+    searchDoctors: publicProcedure
+      .input(z.object({
+        specialization: z.string().optional(),
+        wilaya: z.string().optional(),
+        name: z.string().optional(),
+      }))
+      .query(async ({ input }) => {
+        try {
+          const db = await getDb();
+          if (!db) throw new Error("Database not available");
+
+          const { medicalProfessionals, users } = await import("../drizzle/schema");
+          const { eq, like, and } = await import("drizzle-orm");
+
+          let query = db.select().from(medicalProfessionals);
+
+          const conditions = [];
+          if (input.specialization) {
+            conditions.push(like(medicalProfessionals.specialization, `%${input.specialization}%`));
+          }
+          if (input.wilaya) {
+            conditions.push(eq(medicalProfessionals.wilaya, input.wilaya));
+          }
+
+          if (conditions.length > 0) {
+            query = query.where(and(...conditions));
+          }
+
+          const results = await query;
+          return results;
+        } catch (error) {
+          console.error("[Router] Error searching doctors:", error);
+          return [];
+        }
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;

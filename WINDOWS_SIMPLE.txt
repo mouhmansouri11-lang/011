@@ -1,0 +1,38 @@
+WINDOWS USER - SIMPLE STEPS:
+
+1. Open PowerShell in your project folder
+   (Right-click → Open PowerShell here)
+
+2. Copy and paste this EXACT command:
+   
+   rmdir /s /q node_modules
+   npm install --legacy-peer-deps
+
+3. Wait for it to finish (5-10 minutes)
+
+4. Then run:
+   
+   npm run dev
+
+5. Open browser and go to:
+   
+   http://localhost:3000
+
+DONE! Your app is running! 🎉
+
+---
+
+If "rmdir /s /q node_modules" doesn't work:
+Try this instead:
+   
+   npm ci --legacy-peer-deps
+   npm run dev
+
+---
+
+If npm install is too slow:
+You can try using yarn or pnpm instead (but npm works fine)
+
+---
+
+THAT'S ALL YOU NEED TO DO!

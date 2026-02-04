@@ -1,0 +1,81 @@
+TABIBI PROJECT - FINAL SOLUTION
+
+You have encountered a common npm dependency conflict.
+This is COMPLETELY NORMAL and easily fixed.
+
+THE PROBLEM:
+============
+npm error: "ERESOLVE unable to resolve dependency tree"
+
+THE SOLUTION (Choose one):
+===========================
+
+OPTION 1: WINDOWS (RECOMMENDED)
+================================
+1. Open PowerShell in your project folder
+2. Copy and paste this command:
+
+   rm -r node_modules -Force
+   npm install --legacy-peer-deps
+   npm run dev
+
+3. Wait for "Local: http://localhost:3000"
+4. Open browser to http://localhost:3000
+
+
+OPTION 2: MAC / LINUX
+======================
+1. Open Terminal in project folder
+2. Copy and paste this command:
+
+   rm -rf node_modules
+   npm install --legacy-peer-deps
+   npm run dev
+
+3. Open http://localhost:3000
+
+
+OPTION 3: If BOTH fail
+=======================
+   npm cache clean --force
+   rm -rf node_modules
+   npm install --force
+   npm run dev
+
+
+WHAT THIS DOES:
+================
+- Removes old node_modules folder
+- Installs fresh packages with compatible versions
+- Allows npm to resolve dependency conflicts
+- Starts the development server
+
+
+EXPECTED OUTPUT:
+=================
+When running npm run dev, you should see:
+
+  ➜ Local:   http://localhost:3000/
+  ➜ press h to show help
+
+Then open http://localhost:3000 in your browser!
+
+
+TROUBLESHOOTING:
+=================
+1. Port already in use?
+   - The server will use port 3001 instead
+   - Or close whatever is using port 3000
+
+2. Still getting errors?
+   - Check INSTALLATION_FIX.txt for more details
+   - Check KNOWN_ISSUES.md for common problems
+
+3. Need help?
+   - Read README.md
+   - Check BUILD_FIXES.md
+   - Read KNOWN_ISSUES.md
+
+
+YOU'RE GOOD TO GO! 🎉
+Start the server and test the app!
