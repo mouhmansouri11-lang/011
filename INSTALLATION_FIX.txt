@@ -1,0 +1,101 @@
+INSTALLATION FIX FOR VITE DEPENDENCY ERROR
+
+PROBLEM:
+The error "ERESOLVE unable to resolve dependency tree" happens because:
+- pnpm-lock.yaml has vite@7.3.1 locked
+- But package.json specifies vite@^5.0.8
+- These versions conflict with old plugins
+
+SOLUTION (4 easy steps):
+
+Step 1: Clean Everything
+--------------------------
+cd 011
+rm -rf node_modules
+rm -rf dist
+rm -rf package-lock.json
+del pnpm-lock.yaml (Windows: del pnpm-lock.yaml)
+
+Step 2: Install Fresh
+-----------------------
+npm install --legacy-peer-deps
+
+OR if using pnpm:
+pnpm install --legacy-peer-deps
+
+Step 3: Verify Installation
+----------------------------
+npm run check   # Should show no errors
+npm run build   # Should build successfully
+
+Step 4: Run Development
+-----------------------
+npm run dev
+
+The app will start on http://localhost:3000
+
+
+WHY THIS WORKS:
+- Removes old lock file that had wrong versions
+- --legacy-peer-deps allows npm to resolve conflicting dependencies
+- Clean install uses correct versions from package.json
+- All dependencies will be compatible
+
+
+ALTERNATIVE (If still having issues):
+======================================
+Use npm instead of pnpm:
+
+npm install --force
+
+This forces npm to resolve dependencies even with conflicts.
+npm is more lenient than pnpm with dependency resolution.
+
+
+FOR WINDOWS USERS:
+==================
+If you get permission errors, run Command Prompt as Administrator:
+1. Press Windows key
+2. Type "cmd"
+3. Right-click and select "Run as administrator"
+4. Then run the commands above
+
+
+QUICK COPY-PASTE COMMANDS:
+==========================
+
+For npm:
+--------
+rm -rf node_modules dist package-lock.json
+npm install --legacy-peer-deps
+npm run dev
+
+For Windows (Command Prompt):
+-----------------------------
+rmdir /s /q node_modules
+rmdir /s /q dist
+del package-lock.json
+npm install --legacy-peer-deps
+npm run dev
+
+For pnpm:
+---------
+pnpm install --legacy-peer-deps
+pnpm dev
+
+
+STILL NOT WORKING?
+==================
+Try this nuclear option:
+1. npm cache clean --force
+2. rm -rf node_modules
+3. npm install --force
+4. npm run dev
+
+
+Questions?
+==========
+Check these files:
+- README.md - General information
+- KNOWN_ISSUES.md - Common problems
+- BUILD_FIXES.md - Build related fixes
