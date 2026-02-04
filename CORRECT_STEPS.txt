@@ -1,0 +1,34 @@
+JUST RUN THESE 2 COMMANDS IN ORDER:
+
+================================================
+
+COMMAND 1 - Delete node_modules and reinstall:
+
+For Windows PowerShell:
+rmdir /s /q node_modules
+npm install --legacy-peer-deps
+
+For Mac/Linux:
+rm -rf node_modules
+npm install --legacy-peer-deps
+
+================================================
+
+COMMAND 2 - Run the development server:
+
+npm run dev
+
+================================================
+
+Then open your browser at:
+http://localhost:3000
+
+================================================
+
+THAT'S IT! Your app will start running! 🚀
+
+If you get stuck on "npm install --legacy-peer-deps":
+- Just wait 5-10 minutes (first install takes time)
+- If it fails, try again - npm sometimes needs retries
+
+================================================
